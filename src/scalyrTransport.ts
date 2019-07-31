@@ -31,7 +31,7 @@ const levelToSeverity = (level: string): Severity => {
   return options.get(level) || 3
 }
 
-const nowInNannoSeconds = () => (new Date().getTime() * 1000000)
+const nowInNannoSeconds = () => new Date().getTime() * 1000000
 
 interface ScalyrEvent {
   readonly ts: string
@@ -50,6 +50,7 @@ export class ScalyrTransport extends Transport {
   options: ScalyrTransportOptions
   queue: Array<any> = []
   maxBatchSize: number
+  running: boolean = true
 
   constructor(options: ScalyrTransportOptions) {
     super()
@@ -64,9 +65,13 @@ export class ScalyrTransport extends Transport {
     next()
   }
 
+  close() {
+    this.running = false
+  }
+
   initTimer() {
     const that = this
-    
+
     const toScalyrEvent = (item: any): ScalyrEvent => {
       return {
         ts: nowInNannoSeconds().toString(),
@@ -91,8 +96,9 @@ export class ScalyrTransport extends Transport {
       needle('post', 'https://www.scalyr.com/addEvents', body, {
         content_type: 'application/json'
       })
-
-      setTimeout(flush, that.options.frequencyMs)
+      if (that.running) {
+        setTimeout(flush, that.options.frequencyMs)
+      }
     }
 
     setTimeout(flush, that.options.frequencyMs)
