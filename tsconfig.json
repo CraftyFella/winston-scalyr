@@ -11,8 +11,8 @@
     "sourceMap": false,
     "rootDir": "./src",
     "typeRoots": ["node_modules/@types"],
-    "esModuleInterop": true
-    
+    "esModuleInterop": true,
+    "declaration": true
   },
   "exclude": ["**/tests/**"]
 }

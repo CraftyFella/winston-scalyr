@@ -2,10 +2,11 @@
   "name": "winston-scalyr",
   "version": "0.0.1",
   "description": "A winston transport for scalyr.com",
-  "main": "index.js",
+  "main": "build/index.js",
   "repository": "https://github.com/CraftyFella/winston-scalyr",
   "author": "Dave Craft",
   "license": "MIT",
+  "types": "build/index.d.ts",
   "dependencies": {
     "needle": "^2.4.0",
     "winston": "^3.2.1"
