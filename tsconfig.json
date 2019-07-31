@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "outDir": "./build",
+    "strict": true,
+    "sourceMap": false,
+    "rootDir": "./src",
+    "typeRoots": ["node_modules/@types"],
+    "esModuleInterop": true
+    
+  },
+  "exclude": ["**/tests/**"]
+}

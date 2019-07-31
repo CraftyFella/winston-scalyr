@@ -5,5 +5,16 @@
   "main": "index.js",
   "repository": "https://github.com/CraftyFella/winston-scalyr",
   "author": "Dave Craft",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "needle": "^2.4.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/needle": "^2.0.4",
+    "@types/node": "^12.6.8",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  }
 }
