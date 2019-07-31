@@ -1,0 +1,9 @@
+{
+  "name": "winston-scalyr",
+  "version": "0.0.1",
+  "description": "A winston transport for scalyr.com",
+  "main": "index.js",
+  "repository": "https://github.com/CraftyFella/winston-scalyr",
+  "author": "Dave Craft",
+  "license": "MIT"
+}

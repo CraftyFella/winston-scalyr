@@ -1,0 +1,11 @@
+node_modules
+build
+*.log
+.cache
+test-reports
+test-report.xml
+assemblyVersion.txt
+obj
+bin
+packages-microsoft*
+.ionide/
