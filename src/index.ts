@@ -104,3 +104,5 @@ export class ScalyrTransport extends Transport {
     setTimeout(flush, that.options.frequencyMs)
   }
 }
+
+export default ScalyrTransport
