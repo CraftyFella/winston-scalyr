@@ -9,4 +9,3 @@ obj
 bin
 packages-microsoft*
 .ionide/
-example.ts
