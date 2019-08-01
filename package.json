@@ -1,6 +1,6 @@
 {
   "name": "winston-scalyr",
-  "version": "0.0.0-beta.0",
+  "version": "0.0.2-beta.0",
   "description": "A winston transport for scalyr.com",
   "main": "build/index.js",
   "repository": "https://github.com/CraftyFella/winston-scalyr",
