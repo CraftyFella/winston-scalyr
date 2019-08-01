@@ -12,8 +12,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.15",
     "@types/needle": "^2.0.4",
     "@types/node": "^12.6.8",
+    "jest": "^24.8.0",
+    "jest-junit-reporter": "^1.1.0",
+    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"

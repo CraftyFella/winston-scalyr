@@ -1,0 +1,61 @@
+jest.useFakeTimers()
+import Winston from 'winston'
+import { ScalyrTransport } from '../index'
+import { createFakeScalyrApi } from './helpers'
+
+// TODO:
+
+// If there are no events.. don't make an http request
+// If there are too many events > Max, then keep going until events is less than Max
+// If Scalyr is down, retry
+// Errors are written to console.error
+
+test('logs are mapped to scalyr request', async done => {
+  const fakeScalyrApi = await createFakeScalyrApi(200, async request => {
+    expect(fakeScalyrApi.received.length).toBe(1)
+    expect(request.body).toMatchObject({
+      events: [
+        {
+          attrs: {
+            level: 'info',
+            message: 'A test Info message',
+            messageKey: 'message Value'
+          },
+          sev: 3
+        }
+      ],
+      session: 'aSessionValue',
+      sessionInfo: {
+        key: 'value',
+        'key 2': 2,
+        logfile: 'test',
+        serverHost: 'hostname'
+      },
+      token: 'ShhhitsASecret'
+    })
+    expect(parseInt(request.body.events[0].ts)).toBeGreaterThan(1564674320616000000)
+    await new Promise(resolve => fakeScalyrApi.server.close(resolve))
+    done()
+  })
+
+  const log = Winston.createLogger()
+  const scalyrTransport = new ScalyrTransport({
+    endpoint: fakeScalyrApi.address,
+    level: 'verbose',
+    maxBatchSize: 2,
+    frequencyMs: 1000,
+    logfile: 'test',
+    serverHost: 'hostname',
+    session: 'aSessionValue',
+    sessionInfo: { key: 'value', 'key 2': 2 },
+    token: 'ShhhitsASecret'
+  })
+  log.clear()
+  log.add(scalyrTransport)
+
+  log.info('A test Info message', { messageKey: 'message Value' })
+
+  expect(fakeScalyrApi.received.length).toBe(0)
+
+  jest.advanceTimersByTime(1001)
+})
