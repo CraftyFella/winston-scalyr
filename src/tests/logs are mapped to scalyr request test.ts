@@ -2,11 +2,6 @@ import Winston from 'winston'
 import { ScalyrTransport } from '../index'
 import { createFakeScalyrApi } from './helpers'
 
-// TODO:
-
-// If Scalyr is down, retry
-// Errors are written to console.error
-
 jest.useFakeTimers()
 
 test('logs are mapped to scalyr request', async (done) => {
@@ -15,7 +10,6 @@ test('logs are mapped to scalyr request', async (done) => {
   const log = Winston.createLogger()
 
   const scalyrTransport = new ScalyrTransport({
-    endpoint: fakeScalyrApi.address,
     level: 'verbose',
     maxBatchSize: 2,
     frequencyMs: 1000,

@@ -9,7 +9,6 @@ test('no requests are sent to scalyr when there is nothing logged', async () => 
   const log = Winston.createLogger()
 
   const scalyrTransport = new ScalyrTransport({
-    endpoint: fakeScalyrApi.address,
     level: 'verbose',
     maxBatchSize: 2,
     frequencyMs: 1000,

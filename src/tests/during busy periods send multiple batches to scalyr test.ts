@@ -23,7 +23,6 @@ test('during busy periods send multiple batches to scalyr', async (done) => {
   const log = Winston.createLogger()
 
   const scalyrTransport = new ScalyrTransport({
-    endpoint: fakeScalyrApi.address,
     level: 'verbose',
     maxBatchSize: 5,
     frequencyMs: 1000,
