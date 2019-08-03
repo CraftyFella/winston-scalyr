@@ -1,5 +1,6 @@
 type SessionInfo = { [key: string]: any }
 
+type OnScheduled = () => void
 export interface ScalyrTransportOptions {
   readonly level?: string
   readonly maxBatchSize?: number
@@ -9,6 +10,7 @@ export interface ScalyrTransportOptions {
   readonly logfile: string
   readonly sessionInfo: SessionInfo
   readonly token: string
+  readonly onScheduled?: OnScheduled
 }
 
 export type Severity = 1 | 2 | 3 | 4 | 5 | 6

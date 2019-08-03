@@ -1,12 +1,13 @@
 import Transport from 'winston-transport'
 import needle = require('needle')
-import { ScalyrTransportOptions } from '../build'
 import {
   nowInNanoSeconds,
   levelToSeverity,
   ScalyrEvent,
-  AddEventRequest
+  AddEventRequest,
+  ScalyrTransportOptions
 } from './domain'
+import http from 'http'
 
 export class ScalyrTransport extends Transport {
   options: ScalyrTransportOptions
@@ -19,9 +20,7 @@ export class ScalyrTransport extends Transport {
     this.level = options.level || 'verbose'
     this.maxBatchSize = options.maxBatchSize || 100
     this.options = options
-    if (options.autoStart || true) {
-      this.initTimer()
-    }
+    this.initTimer()
   }
 
   log(info: any, next: () => void) {
@@ -34,8 +33,6 @@ export class ScalyrTransport extends Transport {
   }
 
   initTimer() {
-    
-
     const toScalyrEvent = (item: any): ScalyrEvent => {
       return {
         ts: nowInNanoSeconds().toString(),
@@ -46,9 +43,14 @@ export class ScalyrTransport extends Transport {
 
     const that = this
 
-    const sendBatch = async (events: ScalyrEvent[]) => {
-      const uri = `${that.options.endpoint ||
-        'https://www.scalyr.com'}/addEvents`
+    const isSuccessful = (response: http.IncomingMessage) => {
+      const statusCode = response.statusCode || 0
+      return statusCode >= 200 && statusCode <= 299
+    }
+
+    const sendBatch = async (logs: any[]) => {
+      const events = logs.map(toScalyrEvent)
+      const uri = 'https://www.scalyr.com/addEvents'
       const body: AddEventRequest = {
         token: that.options.token,
         session: that.options.session,
@@ -59,27 +61,32 @@ export class ScalyrTransport extends Transport {
         },
         events: events
       }
-      await needle('post', uri, body, {
+      const response = await needle('post', uri, body, {
         content_type: 'application/json'
       })
+
+      return isSuccessful(response)
+    }
+
+    const reQueue = (logs: any[]) => {
+      logs.forEach(log => that.queue.unshift(log))
     }
 
     const flush = async () => {
       do {
-        
-        const events = that.queue
-          .splice(0, that.maxBatchSize)
-          .map(toScalyrEvent)
-
-        if (events.length) {
-          //console.log('About to send some events to scalyr', events)
-          await sendBatch(events)
+        const logs = that.queue.splice(0, that.maxBatchSize)
+        if (logs.length) {
+          const success = await sendBatch(logs)
+          if (!success) {
+            reQueue(logs)
+            break
+          }
         }
-        //console.log('More to go?', that.queue.length, that.maxBatchSize, that.queue.length >= that.maxBatchSize)
       } while (that.queue.length >= that.maxBatchSize)
 
       if (that.running) {
         setTimeout(flush, that.options.frequencyMs)
+        if (that.options.onScheduled) that.options.onScheduled()
       }
     }
 

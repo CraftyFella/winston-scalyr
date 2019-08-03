@@ -4,7 +4,6 @@ import { createFakeScalyrApi } from './helpers'
 
 // TODO:
 
-// If there are too many events > Max, then keep going until events is less than Max
 // If Scalyr is down, retry
 // Errors are written to console.error
 

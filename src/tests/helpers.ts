@@ -8,7 +8,7 @@ export interface ScalyrRequest {
 export const createFakeScalyrApi = (statusCode: number, onRecieved: () => void) => {
   const received: ScalyrRequest[] = []
 
-  const address = 'https://api.github.com';
+  const address = 'https://www.scalyr.com';
   const scope = nock(address)
   .persist()
   .matchHeader('content-type', 'application/json')
