@@ -45,31 +45,28 @@ export class ScalyrTransport extends Transport {
       }
     }
 
-    const uri = `${that.options.endpoint || 'https://www.scalyr.com'}/addEvents`;
+    const uri = `${that.options.endpoint || 'https://www.scalyr.com'}/addEvents`
 
     const flush = async () => {
       console.log('About to flush and queue is', that.queue, uri)
       const events = that.queue.splice(0, that.maxBatchSize).map(toScalyrEvent)
+      if (events.length) {
+        const body: AddEventRequest = {
+          token: that.options.token,
+          session: that.options.session,
+          sessionInfo: {
+            ...that.options.sessionInfo,
+            logfile: that.options.logfile,
+            serverHost: that.options.serverHost
+          },
+          events: events
+        }
 
-      const body: AddEventRequest = {
-        token: that.options.token,
-        session: that.options.session,
-        sessionInfo: {
-          ...that.options.sessionInfo,
-          logfile: that.options.logfile,
-          serverHost: that.options.serverHost
-        },
-        events: events
+        await needle('post', uri, body, {
+          content_type: 'application/json'
+        })
       }
 
-      await needle(
-        'post',
-        uri,
-        body,
-        {
-          content_type: 'application/json'
-        }
-      )
       if (that.running) {
         setTimeout(flush, that.options.frequencyMs)
       }

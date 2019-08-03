@@ -1,4 +1,3 @@
-jest.useFakeTimers()
 import Winston from 'winston'
 import { ScalyrTransport } from '../index'
 import { createFakeScalyrApi } from './helpers'
@@ -16,6 +15,9 @@ import { createFakeScalyrApi } from './helpers'
 //   //const log = Winston.createLogger()
 
 // })
+
+
+jest.useFakeTimers()
 
 test('logs are mapped to scalyr request', async () => {
   const fakeScalyrApi = createFakeScalyrApi(200)
