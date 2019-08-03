@@ -30,7 +30,7 @@ test('during busy periods send multiple batches to scalyr', async (done) => {
     serverHost: 'hostname',
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
-    token: 'ShhhitsASecret'
+    token: 'token'
   })
 
   log.clear()

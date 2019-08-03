@@ -16,7 +16,7 @@ test('no requests are sent to scalyr when there is nothing logged', async () => 
     serverHost: 'hostname',
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
-    token: 'ShhhitsASecret'
+    token: 'secret'
   })
 
   log.clear()

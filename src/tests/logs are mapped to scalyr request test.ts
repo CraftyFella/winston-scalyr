@@ -17,7 +17,7 @@ test('logs are mapped to scalyr request', async (done) => {
     serverHost: 'hostname',
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
-    token: 'ShhhitsASecret'
+    token: 'secret'
   })
 
   log.clear()
@@ -48,7 +48,7 @@ test('logs are mapped to scalyr request', async (done) => {
       logfile: 'test',
       serverHost: 'hostname'
     },
-    token: 'ShhhitsASecret'
+    token: 'secret'
   })
   expect(parseInt(fakeScalyrApi.received[0].body.events[0].ts)).toBeGreaterThan(
     1564674320616000000

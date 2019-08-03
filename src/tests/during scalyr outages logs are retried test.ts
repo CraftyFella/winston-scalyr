@@ -26,7 +26,7 @@ test('during scalyr outages logs are retried', async (done) => {
     serverHost: 'hostname',
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
-    token: 'ShhhitsASecret',
+    token: 'secret',
     onScheduled: () =>  {
       jest.advanceTimersByTime(1001)
     }
