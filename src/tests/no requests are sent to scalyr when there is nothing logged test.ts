@@ -4,7 +4,7 @@ import { createFakeScalyrApi } from './helpers'
 jest.useFakeTimers()
 
 test('no requests are sent to scalyr when there is nothing logged', async () => {
-  const fakeScalyrApi = createFakeScalyrApi(200)
+  const fakeScalyrApi = createFakeScalyrApi(200, () => {})
 
   const log = Winston.createLogger()
 
@@ -26,5 +26,5 @@ test('no requests are sent to scalyr when there is nothing logged', async () => 
   jest.advanceTimersByTime(1001)
 
   expect(fakeScalyrApi.received.length).toBe(0)
-
+  scalyrTransport.close()
 })

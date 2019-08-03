@@ -5,11 +5,12 @@ export interface ScalyrRequest {
   body?: any
 }
 
-export const createFakeScalyrApi = (statusCode: number) => {
+export const createFakeScalyrApi = (statusCode: number, onRecieved: () => void) => {
   const received: ScalyrRequest[] = []
 
   const address = 'https://api.github.com';
   const scope = nock(address)
+  .persist()
   .matchHeader('content-type', 'application/json')
   .post('/addEvents')
   .reply(statusCode, (uri, requestBody) => {
@@ -17,6 +18,7 @@ export const createFakeScalyrApi = (statusCode: number) => {
       uri: uri,
       body: requestBody
     })
+    onRecieved()
     return {}
   })
 

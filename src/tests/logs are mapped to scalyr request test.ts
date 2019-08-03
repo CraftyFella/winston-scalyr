@@ -4,23 +4,14 @@ import { createFakeScalyrApi } from './helpers'
 
 // TODO:
 
-// If there are no events.. don't make an http request
 // If there are too many events > Max, then keep going until events is less than Max
 // If Scalyr is down, retry
 // Errors are written to console.error
 
-// test('nothing is send to scalyr when no logs are written', async () => {
-//   //const fakeScalyrApi = await createFakeScalyrApi(200, async _request => { })
-
-//   //const log = Winston.createLogger()
-
-// })
-
-
 jest.useFakeTimers()
 
-test('logs are mapped to scalyr request', async () => {
-  const fakeScalyrApi = createFakeScalyrApi(200)
+test('logs are mapped to scalyr request', async (done) => {
+  const fakeScalyrApi = createFakeScalyrApi(200, done)
 
   const log = Winston.createLogger()
 
@@ -69,4 +60,6 @@ test('logs are mapped to scalyr request', async () => {
   expect(parseInt(fakeScalyrApi.received[0].body.events[0].ts)).toBeGreaterThan(
     1564674320616000000
   )
+
+  scalyrTransport.close()
 })

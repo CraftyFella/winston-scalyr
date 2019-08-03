@@ -25,7 +25,6 @@ export class ScalyrTransport extends Transport {
   }
 
   log(info: any, next: () => void) {
-    console.log('got a message', info)
     this.queue.push(info)
     next()
   }
@@ -35,7 +34,7 @@ export class ScalyrTransport extends Transport {
   }
 
   initTimer() {
-    const that = this
+    
 
     const toScalyrEvent = (item: any): ScalyrEvent => {
       return {
@@ -45,27 +44,39 @@ export class ScalyrTransport extends Transport {
       }
     }
 
-    const uri = `${that.options.endpoint || 'https://www.scalyr.com'}/addEvents`
+    const that = this
+
+    const sendBatch = async (events: ScalyrEvent[]) => {
+      const uri = `${that.options.endpoint ||
+        'https://www.scalyr.com'}/addEvents`
+      const body: AddEventRequest = {
+        token: that.options.token,
+        session: that.options.session,
+        sessionInfo: {
+          ...that.options.sessionInfo,
+          logfile: that.options.logfile,
+          serverHost: that.options.serverHost
+        },
+        events: events
+      }
+      await needle('post', uri, body, {
+        content_type: 'application/json'
+      })
+    }
 
     const flush = async () => {
-      console.log('About to flush and queue is', that.queue, uri)
-      const events = that.queue.splice(0, that.maxBatchSize).map(toScalyrEvent)
-      if (events.length) {
-        const body: AddEventRequest = {
-          token: that.options.token,
-          session: that.options.session,
-          sessionInfo: {
-            ...that.options.sessionInfo,
-            logfile: that.options.logfile,
-            serverHost: that.options.serverHost
-          },
-          events: events
-        }
+      do {
+        
+        const events = that.queue
+          .splice(0, that.maxBatchSize)
+          .map(toScalyrEvent)
 
-        await needle('post', uri, body, {
-          content_type: 'application/json'
-        })
-      }
+        if (events.length) {
+          //console.log('About to send some events to scalyr', events)
+          await sendBatch(events)
+        }
+        //console.log('More to go?', that.queue.length, that.maxBatchSize, that.queue.length >= that.maxBatchSize)
+      } while (that.queue.length >= that.maxBatchSize)
 
       if (that.running) {
         setTimeout(flush, that.options.frequencyMs)
