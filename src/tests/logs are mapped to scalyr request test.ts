@@ -10,35 +10,18 @@ import { createFakeScalyrApi } from './helpers'
 // If Scalyr is down, retry
 // Errors are written to console.error
 
-test('logs are mapped to scalyr request', async done => {
-  const fakeScalyrApi = await createFakeScalyrApi(200, async request => {
-    expect(fakeScalyrApi.received.length).toBe(1)
-    expect(request.body).toMatchObject({
-      events: [
-        {
-          attrs: {
-            level: 'info',
-            message: 'A test Info message',
-            messageKey: 'message Value'
-          },
-          sev: 3
-        }
-      ],
-      session: 'aSessionValue',
-      sessionInfo: {
-        key: 'value',
-        'key 2': 2,
-        logfile: 'test',
-        serverHost: 'hostname'
-      },
-      token: 'ShhhitsASecret'
-    })
-    expect(parseInt(request.body.events[0].ts)).toBeGreaterThan(1564674320616000000)
-    await new Promise(resolve => fakeScalyrApi.server.close(resolve))
-    done()
-  })
+// test('nothing is send to scalyr when no logs are written', async () => {
+//   //const fakeScalyrApi = await createFakeScalyrApi(200, async _request => { })
+
+//   //const log = Winston.createLogger()
+
+// })
+
+test('logs are mapped to scalyr request', async () => {
+  const fakeScalyrApi = createFakeScalyrApi(200)
 
   const log = Winston.createLogger()
+
   const scalyrTransport = new ScalyrTransport({
     endpoint: fakeScalyrApi.address,
     level: 'verbose',
@@ -50,6 +33,7 @@ test('logs are mapped to scalyr request', async done => {
     sessionInfo: { key: 'value', 'key 2': 2 },
     token: 'ShhhitsASecret'
   })
+
   log.clear()
   log.add(scalyrTransport)
 
@@ -58,4 +42,29 @@ test('logs are mapped to scalyr request', async done => {
   expect(fakeScalyrApi.received.length).toBe(0)
 
   jest.advanceTimersByTime(1001)
+
+  expect(fakeScalyrApi.received.length).toBe(1)
+  expect(fakeScalyrApi.received[0].body).toMatchObject({
+    events: [
+      {
+        attrs: {
+          level: 'info',
+          message: 'A test Info message',
+          messageKey: 'message Value'
+        },
+        sev: 3
+      }
+    ],
+    session: 'aSessionValue',
+    sessionInfo: {
+      key: 'value',
+      'key 2': 2,
+      logfile: 'test',
+      serverHost: 'hostname'
+    },
+    token: 'ShhhitsASecret'
+  })
+  expect(parseInt(fakeScalyrApi.received[0].body.events[0].ts)).toBeGreaterThan(
+    1564674320616000000
+  )
 })
