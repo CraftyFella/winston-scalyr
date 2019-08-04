@@ -1,8 +1,7 @@
-import needle from 'needle'
-import http from 'http'
 import { Severity, LogToScalyrEvent, LogsToAddEventsRequest, AddEventsRequest, ScalyrEventsSender, ScalyrTransportOptions } from './domain';
+import { addEvents } from './scalyrClient';
 
-export const levelToSeverity = (level: string): Severity => {
+const levelToSeverity = (level: string): Severity => {
   const options = new Map()
   options.set('verbose', 1)
   options.set('debug', 2)
@@ -17,9 +16,9 @@ export const levelToSeverity = (level: string): Severity => {
   return options.get(level) || 3
 }
 
-export const nowInNanoSeconds = () => new Date().getTime() * 1000000
+const nowInNanoSeconds = () => new Date().getTime() * 1000000
 
-export const toScalyrEvent: LogToScalyrEvent = item => {
+const toScalyrEvent: LogToScalyrEvent = item => {
   return {
     ts: nowInNanoSeconds().toString(),
     sev: levelToSeverity(item.level),
@@ -27,7 +26,7 @@ export const toScalyrEvent: LogToScalyrEvent = item => {
   }
 }
 
-export const toScalyrAddEventsRequest: LogsToAddEventsRequest = (options, logs) => {
+const toScalyrAddEventsRequest: LogsToAddEventsRequest = (options, logs) => {
   const events = logs.map(toScalyrEvent)
   const request: AddEventsRequest = {
     token: options.token,
@@ -44,19 +43,7 @@ export const toScalyrAddEventsRequest: LogsToAddEventsRequest = (options, logs) 
 
 export const createEventsSender = (options: ScalyrTransportOptions) : ScalyrEventsSender => {
   return async (logs) => {
-    const isSuccessful = (response: http.IncomingMessage) => {
-      const statusCode = response.statusCode || 0
-      return statusCode >= 200 && statusCode <= 299
-    }
-  
     const request = toScalyrAddEventsRequest(options, logs)
-  
-    const uri = 'https://www.scalyr.com/addEvents'
-  
-    const response = await needle('post', uri, request, {
-      content_type: 'application/json'
-    })
-  
-    return isSuccessful(response)
+    return await addEvents(request)
   }
 }
