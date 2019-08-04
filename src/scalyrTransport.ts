@@ -15,7 +15,7 @@ export class ScalyrTransport extends Transport {
     this.level = options.level || 'verbose'
     this.maxBatchSize = options.maxBatchSize || 100
     this.options = options
-    this.initTimer()
+    this.startPolling()
   }
 
   log(info: any, next: () => void) {
@@ -27,34 +27,39 @@ export class ScalyrTransport extends Transport {
     this.running = false
   }
 
-  initTimer() {
+  startPolling() {
     const that = this
 
-    const sendBatch = createEventsSender(this.options)
-
-    const reQueue = (logs: any[]) => {
-      logs.forEach(log => that.queue.unshift(log))
-    }
-
-    const flush = async () => {
-      do {
-        const logs = that.queue.splice(0, that.maxBatchSize)
-        if (logs.length) {
-          const success = await sendBatch(logs)
-          if (!success) {
-            reQueue(logs)
-            break
-          }
+    const flushAndReschedule = async () => {
+      await this.flush.apply(that)
+      if (that.running){
+        setTimeout(flushAndReschedule, that.options.frequencyMs)
+        if (that.options.onScheduled){
+          that.options.onScheduled()
         }
-      } while (that.queue.length >= that.maxBatchSize)
-
-      if (that.running) {
-        setTimeout(flush, that.options.frequencyMs)
-        if (that.options.onScheduled) that.options.onScheduled()
       }
     }
 
-    setTimeout(flush, that.options.frequencyMs)
+    setTimeout(flushAndReschedule, that.options.frequencyMs)
+  }
+
+  async flush() {
+    const sendBatch = createEventsSender(this.options)
+
+    const reQueue = (logs: any[]) => {
+      logs.forEach(log => this.queue.unshift(log))
+    }
+
+    do {
+      const logs = this.queue.splice(0, this.maxBatchSize)
+      if (logs.length) {
+        const success = await sendBatch(logs)
+        if (!success) {
+          reQueue(logs)
+          break
+        }
+      }
+    } while (this.queue.length >= this.maxBatchSize)
   }
 }
 

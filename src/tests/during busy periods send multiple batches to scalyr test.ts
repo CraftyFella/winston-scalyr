@@ -1,5 +1,5 @@
 import Winston from 'winston'
-import { ScalyrTransport } from '../index'
+import { ScalyrTransport } from '../scalyrTransport'
 import { createFakeScalyrApi } from './helpers'
 
 jest.useFakeTimers()
