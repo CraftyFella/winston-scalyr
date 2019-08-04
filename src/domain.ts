@@ -11,6 +11,7 @@ export interface ScalyrTransportOptions {
   readonly sessionInfo: SessionInfo
   readonly token: string
   readonly onScheduled?: OnScheduled
+  readonly autoStart?: boolean
 }
 
 export type Severity = 1 | 2 | 3 | 4 | 5 | 6

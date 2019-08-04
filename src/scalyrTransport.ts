@@ -1,8 +1,6 @@
 import Transport from 'winston-transport'
-import {
-  ScalyrTransportOptions
-} from './domain'
-import { createEventsSender } from './eventsSender';
+import { ScalyrTransportOptions } from './domain'
+import { createEventsSender } from './eventsSender'
 
 export class ScalyrTransport extends Transport {
   options: ScalyrTransportOptions
@@ -15,7 +13,9 @@ export class ScalyrTransport extends Transport {
     this.level = options.level || 'verbose'
     this.maxBatchSize = options.maxBatchSize || 100
     this.options = options
-    this.startPolling()
+    if (options.autoStart || true) {
+      this.startPolling()
+    }
   }
 
   log(info: any, next: () => void) {
@@ -32,9 +32,9 @@ export class ScalyrTransport extends Transport {
 
     const flushAndReschedule = async () => {
       await this.flush.apply(that)
-      if (that.running){
+      if (that.running) {
         setTimeout(flushAndReschedule, that.options.frequencyMs)
-        if (that.options.onScheduled){
+        if (that.options.onScheduled) {
           that.options.onScheduled()
         }
       }
