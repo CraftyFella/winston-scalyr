@@ -5,7 +5,7 @@ import { createFakeScalyrApi } from './helpers'
 jest.useFakeTimers()
 
 test('logs are mapped to scalyr request', async (done) => {
-  const fakeScalyrApi = createFakeScalyrApi(200, done)
+  const fakeScalyrApi = createFakeScalyrApi(200, undefined, done)
 
   const log = Winston.createLogger()
 

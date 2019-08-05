@@ -6,12 +6,14 @@ export class ScalyrTransport extends Transport {
   options: ScalyrTransportOptions
   queue: Array<any> = []
   maxBatchSize: number
+  frequencyMs: number
   running: boolean = true
 
   constructor(options: ScalyrTransportOptions) {
     super()
     this.level = options.level || 'verbose'
     this.maxBatchSize = options.maxBatchSize || 100
+    this.frequencyMs = options.frequencyMs || 5000
     this.options = options
     if (options.autoStart || true) {
       this.startPolling()
@@ -33,14 +35,14 @@ export class ScalyrTransport extends Transport {
     const flushAndReschedule = async () => {
       await this.flush.apply(that)
       if (that.running) {
-        setTimeout(flushAndReschedule, that.options.frequencyMs)
+        setTimeout(flushAndReschedule, that.frequencyMs)
         if (that.options.onScheduled) {
           that.options.onScheduled()
         }
       }
     }
 
-    setTimeout(flushAndReschedule, that.options.frequencyMs)
+    setTimeout(flushAndReschedule, that.frequencyMs)
   }
 
   async flush() {

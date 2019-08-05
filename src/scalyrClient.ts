@@ -3,7 +3,8 @@ import http from 'http'
 import { AddEventsRequest } from './domain'
 
 export const addEvents = async (
-  request: AddEventsRequest
+  request: AddEventsRequest,
+  timeout?: number
 ): Promise<boolean> => {
   const isSuccessful = (response: http.IncomingMessage) => {
     const statusCode = response.statusCode || 0
@@ -12,9 +13,14 @@ export const addEvents = async (
 
   const uri = 'https://www.scalyr.com/addEvents'
 
-  const response = await needle('post', uri, request, {
-    content_type: 'application/json'
-  })
-
-  return isSuccessful(response)
+  try {
+    const response = await needle('post', uri, request, {
+      content_type: 'application/json',
+      timeout: timeout
+    })
+    return isSuccessful(response)
+  } catch (err) {
+    console.error(err)
+    return false
+  }
 }

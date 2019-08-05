@@ -2,14 +2,15 @@ type SessionInfo = { [key: string]: any }
 
 type OnScheduled = () => void
 export interface ScalyrTransportOptions {
-  readonly level?: string
-  readonly maxBatchSize?: number
-  readonly frequencyMs: number
   readonly session: string
   readonly serverHost: string
   readonly logfile: string
-  readonly sessionInfo: SessionInfo
   readonly token: string
+  readonly timeout?: number
+  readonly level?: string
+  readonly maxBatchSize?: number
+  readonly frequencyMs?: number
+  readonly sessionInfo?: SessionInfo
   readonly onScheduled?: OnScheduled
   readonly autoStart?: boolean
 }

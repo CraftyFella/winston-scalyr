@@ -6,7 +6,7 @@ jest.useFakeTimers()
 
 test('during busy periods send multiple batches to scalyr', async (done) => {
   var count : number = 0
-  const fakeScalyrApi = createFakeScalyrApi(200, () => {
+  const fakeScalyrApi = createFakeScalyrApi(200, undefined, () => {
     console.log('On Recveived', count)
     count++
     if (count == 2) {

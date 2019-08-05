@@ -44,6 +44,6 @@ const toScalyrAddEventsRequest: LogsToAddEventsRequest = (options, logs) => {
 export const createEventsSender = (options: ScalyrTransportOptions) : ScalyrEventsSender => {
   return async (logs) => {
     const request = toScalyrAddEventsRequest(options, logs)
-    return await addEvents(request)
+    return await addEvents(request, options.timeout)
   }
 }

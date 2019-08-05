@@ -6,7 +6,7 @@ jest.useFakeTimers()
 
 test('during scalyr outages logs are retried', async (done) => {
   var count : number = 0
-  const fakeScalyrApi = createFakeScalyrApi(500, () => {
+  const fakeScalyrApi = createFakeScalyrApi(500, undefined, () => {
     count++
     console.log('On Recevied', count)
     if (count == 2) {
