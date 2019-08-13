@@ -1,6 +1,8 @@
 import { createEventsSender } from '../../eventsSender'
 import { delay } from '../helpers';
 
+jest.useRealTimers()
+
 test('exception occurs returns failure', async () => {
 
   const sender = createEventsSender({
@@ -13,6 +15,6 @@ test('exception occurs returns failure', async () => {
 
   const result = await sender([{ 'An': 'Event' }]);
 
-  await delay(10)
+  await delay(50)
   expect(result).toBe(false)
 })

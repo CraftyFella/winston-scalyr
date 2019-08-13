@@ -1,4 +1,4 @@
 set -e
 rm -rf build
-npx jest
+npx jest --runInBand
 tsc
