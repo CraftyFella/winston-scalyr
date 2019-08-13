@@ -12,17 +12,23 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/cls-hooked": "^4.3.0",
     "@types/jest": "^24.0.15",
-    "jest-nock": "^0.1.7",
     "@types/needle": "^2.0.4",
     "@types/nock": "^10.0.3",
     "@types/node": "^12.6.8",
+    "@types/restify": "^7.2.12",
+    "@types/uuid": "^3.4.5",
+    "cls-hooked": "^4.2.2",
     "jest": "^24.8.0",
     "jest-junit-reporter": "^1.1.0",
+    "jest-nock": "^0.1.7",
     "nock": "^10.0.6",
+    "restify": "^8.4.0",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "uuid": "^3.3.2"
   }
 }
