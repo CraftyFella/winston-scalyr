@@ -14,5 +14,5 @@
     "esModuleInterop": true,
     "declaration": true
   },
-  "exclude": ["**/tests/**", "package.json"]
+  "exclude": ["**/tests/**", "package.json", "src/examples/**"]
 }
