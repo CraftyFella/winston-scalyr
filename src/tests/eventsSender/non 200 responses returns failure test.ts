@@ -1,9 +1,11 @@
 import { createEventsSender } from '../../eventsSender'
-import { delay } from '../helpers';
+import { createFakeScalyrApi } from '../helpers';
 
 jest.useRealTimers()
 
-test('exception occurs returns failure', async () => {
+test('non 200 responses returns failure', async () => {
+
+  createFakeScalyrApi(500)
 
   const sender = createEventsSender({
     logfile: '',
@@ -14,7 +16,5 @@ test('exception occurs returns failure', async () => {
   })
 
   const result = await sender([{ 'An': 'Event' }]);
-
-  await delay(50)
   expect(result).toBe(false)
 })
