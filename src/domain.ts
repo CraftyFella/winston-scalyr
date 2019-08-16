@@ -1,6 +1,5 @@
 type SessionInfo = { [key: string]: any }
 
-type OnScheduled = () => void
 export interface ScalyrTransportOptions {
   readonly session: string
   readonly serverHost: string
@@ -11,7 +10,6 @@ export interface ScalyrTransportOptions {
   readonly maxBatchSize?: number
   readonly frequencyMs?: number
   readonly sessionInfo?: SessionInfo
-  readonly onScheduled?: OnScheduled
   readonly autoStart?: boolean
 }
 
@@ -33,3 +31,5 @@ export interface AddEventsRequest {
 export type LogToScalyrEvent = (log: any) => ScalyrEvent
 export type LogsToAddEventsRequest = (options : ScalyrTransportOptions, logs: any[]) => AddEventsRequest
 export type ScalyrEventsSender = (logs: any[]) => Promise<boolean>
+export type PollerStopper = () => void
+export type Poller = (frequencyMs: number, action: () => Promise<void>) => PollerStopper

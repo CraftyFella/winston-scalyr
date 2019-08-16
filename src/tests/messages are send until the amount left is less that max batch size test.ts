@@ -2,7 +2,7 @@ import Winston from 'winston'
 import { ScalyrTransport } from '../scalyrTransport'
 import { createFakeScalyrApi } from './helpers'
 
-test('during scalyr outages logs are retried', async () => {
+test('messages are send until the amount left is less that max batch size', async () => {
   
   const fakeScalyrApi = createFakeScalyrApi(500)
 
@@ -23,15 +23,17 @@ test('during scalyr outages logs are retried', async () => {
   log.add(scalyrTransport)
 
   log.info('A test Info message 1')
+  log.info('A test Info message 1')
+  log.info('A test Info message 1')
+  log.info('A test Info message 1')
+  log.info('A test Info message 1')
+  log.info('A test Info message 1')
 
   await scalyrTransport.flush()
 
   expect(fakeScalyrApi.received.length).toBe(1)
-
-  await scalyrTransport.flush()
-
-  expect(fakeScalyrApi.received.length).toBe(2)
-
+  expect(fakeScalyrApi.received[0].body.events.length).toBe(5)
+  
   scalyrTransport.close()
   
 })

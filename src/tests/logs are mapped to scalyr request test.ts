@@ -2,22 +2,19 @@ import Winston from 'winston'
 import { ScalyrTransport } from '../scalyrTransport'
 import { createFakeScalyrApi } from './helpers'
 
-jest.useFakeTimers()
-
-test('logs are mapped to scalyr request', async (done) => {
-  const fakeScalyrApi = createFakeScalyrApi(200, undefined, done)
-
+test('logs are mapped to scalyr request', async () => {
+  const fakeScalyrApi = createFakeScalyrApi(200)
   const log = Winston.createLogger()
 
   const scalyrTransport = new ScalyrTransport({
     level: 'verbose',
     maxBatchSize: 2,
-    frequencyMs: 1000,
     logfile: 'test',
     serverHost: 'hostname',
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
-    token: 'secret'
+    token: 'secret',
+    autoStart: false
   })
 
   log.clear()
@@ -27,7 +24,7 @@ test('logs are mapped to scalyr request', async (done) => {
 
   expect(fakeScalyrApi.received.length).toBe(0)
 
-  jest.advanceTimersByTime(1001)
+  await scalyrTransport.flush()
 
   expect(fakeScalyrApi.received.length).toBe(1)
   expect(fakeScalyrApi.received[0].body).toMatchObject({

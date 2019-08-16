@@ -2,23 +2,8 @@ import Winston from 'winston'
 import { ScalyrTransport } from '../scalyrTransport'
 import { createFakeScalyrApi } from './helpers'
 
-jest.useFakeTimers()
-
-test('during busy periods send multiple batches to scalyr', async (done) => {
-  var count : number = 0
-  const fakeScalyrApi = createFakeScalyrApi(200, undefined, () => {
-    console.log('On Recveived', count)
-    count++
-    if (count == 2) {
-      // Sent up 2 batches of 5
-      expect(fakeScalyrApi.received.length).toBe(2) 
-      expect(fakeScalyrApi.received[0].body.events.length).toBe(5)
-      expect(fakeScalyrApi.received[1].body.events.length).toBe(5)
-      
-      scalyrTransport.close()
-      done()
-    }
-  })
+test('during busy periods send multiple batches to scalyr', async () => {
+  const fakeScalyrApi = createFakeScalyrApi(200)
 
   const log = Winston.createLogger()
 
@@ -48,7 +33,10 @@ test('during busy periods send multiple batches to scalyr', async (done) => {
   log.info('A test Info message 10')
   log.info('A test Info message 11')
 
-  jest.advanceTimersByTime(1001)
+  await scalyrTransport.flush()
 
+  expect(fakeScalyrApi.received.length).toBe(2) 
+  expect(fakeScalyrApi.received[0].body.events.length).toBe(5)
+  expect(fakeScalyrApi.received[1].body.events.length).toBe(5)
   
 })

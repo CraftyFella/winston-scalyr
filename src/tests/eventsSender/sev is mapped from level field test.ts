@@ -24,7 +24,7 @@ each([['debug', 2], ['info', 3], ['warn', 4], ['error', 5]])
     },
   })
 
-  const result = await sender([{ 'An': 'Event', 'level': level }]);
+  const result = await sender([{ 'level': level }]);
   expect(result).toBe(true)
 
   expect(fakeScalyrApi.received.length).toBe(1)

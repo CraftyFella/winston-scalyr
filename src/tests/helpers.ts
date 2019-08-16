@@ -26,6 +26,3 @@ export const createFakeScalyrApi = (statusCode: number, timeout?: number, onReci
   return { server: scope, address: address, received: received }
 }
 
-export const delay = (ms: number) => {
-  return new Promise( resolve => setTimeout(resolve, ms) );
-}

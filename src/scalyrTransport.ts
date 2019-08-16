@@ -2,6 +2,9 @@ import Transport from 'winston-transport'
 import { ScalyrTransportOptions } from './domain'
 import { createEventsSender } from './eventsSender'
 
+export const delay = (ms: number) => {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
 export class ScalyrTransport extends Transport {
   options: ScalyrTransportOptions
   queue: Array<any> = []
@@ -25,24 +28,20 @@ export class ScalyrTransport extends Transport {
     next()
   }
 
-  close() {
+  async close() {
     this.running = false
+    await this.flush()
   }
 
   startPolling() {
-    const that = this
-
-    const flushAndReschedule = async () => {
-      await this.flush.apply(that)
-      if (that.running) {
-        setTimeout(flushAndReschedule, that.frequencyMs)
-        if (that.options.onScheduled) {
-          that.options.onScheduled()
-        }
+    const flushLoop = async () => {
+      while (this.running) {
+        await delay(this.frequencyMs)
+        await this.flush()
       }
     }
 
-    setTimeout(flushAndReschedule, that.frequencyMs)
+    flushLoop() // Should exit as it's async
   }
 
   async flush() {
@@ -61,7 +60,7 @@ export class ScalyrTransport extends Transport {
           break
         }
       }
-    } while (this.queue.length >= this.maxBatchSize)
+    } while ((!this.running && this.queue.length) || (this.running && this.queue.length >= this.maxBatchSize))
   }
 }
 
