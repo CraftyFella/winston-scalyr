@@ -1,6 +1,6 @@
-import Winston from 'winston'
-import { ScalyrTransport } from '../scalyrTransport'
-import { hostname } from 'os'
+import { hostname } from 'os';
+import Winston from 'winston';
+import { ScalyrTransport } from '../scalyrTransport';
 
 var running = true
 
@@ -35,6 +35,12 @@ const main = async () => {
   log.debug('a debug message')
   log.verbose('a verbose message')
   await delay(1100)
+  log.info('Should get pushed by close being called 1')
+  log.info('Should get pushed by close being called 2')
+  log.info('Should get pushed by close being called 3')
+  log.info('Should get pushed by close being called 4')
+  log.info('Should get pushed by close being called 5')
+  log.info('Should get pushed by close being called 6')
   running = false
 }
 

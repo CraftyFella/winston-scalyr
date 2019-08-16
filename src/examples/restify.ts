@@ -16,7 +16,7 @@ export const simulateSlowDatabaseCall = async () => {
 }
 
 server.get('/', async (_req, res, next) => {
-  res.send('hello world from restify')
+  
 
   logger.info('complex before', {
     'string-key': 'string-value',
@@ -27,6 +27,8 @@ server.get('/', async (_req, res, next) => {
   await simulateSlowDatabaseCall()
 
   logger.info('request handler info after')
+
+  res.send('hello world from restify')
 
   next()
 })

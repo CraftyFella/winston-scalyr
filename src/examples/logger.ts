@@ -14,7 +14,8 @@ export const logger = createLogger({
   
   transports: [
     new ScalyrTransport({
-      frequencyMs: 1000,
+      frequencyMs: 10000,
+      maxBatchSize: 5,
       logfile: 'winston-scalyr-tracing-example',
       serverHost: hostname(),
       session: new Date().getTime.toString(),
