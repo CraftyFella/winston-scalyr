@@ -33,7 +33,7 @@ export class ScalyrTransport extends Transport {
 
   async close() {
     this.running = false
-    await this.flush()
+    await this.flush(0)
   }
 
   private startPolling() {
@@ -51,7 +51,8 @@ export class ScalyrTransport extends Transport {
     logs.forEach(log => this.queue.unshift(log))
   }
 
-  async flush() {
+  async flush(minSize? :number) {
+    const min = minSize === undefined ? this.maxBatchSize : minSize
     do {
       const logs = this.queue.splice(0, this.maxBatchSize)
       if (logs.length) {
@@ -60,8 +61,8 @@ export class ScalyrTransport extends Transport {
           this.reQueue(logs)
           break
         }
-      }
-    } while ((!this.running && this.queue.length) || (this.running && this.queue.length >= this.maxBatchSize))
+      }  
+    } while (this.queue.length > min)
   }
 }
 
