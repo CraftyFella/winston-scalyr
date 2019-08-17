@@ -1,9 +1,7 @@
 import { createEventsSender } from '../../eventsSender'
 
-jest.useRealTimers()
-
 test('exception occurs returns failure', async () => {
-
+  
   const sender = createEventsSender({
     logfile: '',
     serverHost: 'host',
