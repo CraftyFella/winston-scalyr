@@ -30,7 +30,5 @@ export interface AddEventsRequest {
 
 export type LogToScalyrEvent = (log: any) => ScalyrEvent
 export type LogsToAddEventsRequest = (options : ScalyrTransportOptions, logs: any[]) => AddEventsRequest
-export type BatchingScalyrEventsSender = (logs: any[], min?: number) => Promise<void>
 export type ScalyrEventsSender = (logs: any[]) => Promise<boolean>
-export type PollerStopper = () => void
-export type Poller = (frequencyMs: number, action: () => Promise<void>) => PollerStopper
+export type BatchingScalyrEventsSender = (logs: any[], min?: number) => Promise<void>
