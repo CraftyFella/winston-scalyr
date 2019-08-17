@@ -13,6 +13,9 @@ Install the [winston-scalyr](https://www.npmjs.com/package/winston-scalyr) packa
 To configure the transport
 
 ```javascript
+const winston = require('winston')
+const scalyr = require('winston-scalyr')
+const transports = []
 transports.push(
     new scalyr.ScalyrTransport({
       logfile: 'your-service-name',
@@ -20,6 +23,10 @@ transports.push(
       session: `something-unique-host-version-service-name`,
       token: 'your-secret-token-from-scalyr'
     })
+winston.createLogger({
+  level: 'info',
+  transports
+})
 ```
 **logfile** The name of the log file being written to. This will probably be the name of your service.
 
