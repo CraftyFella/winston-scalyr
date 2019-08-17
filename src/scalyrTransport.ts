@@ -9,13 +9,13 @@ export class ScalyrTransport extends Transport {
   queue: Array<any> = []
   frequencyMs: number
   running: boolean = true
-  sendLogs: BatchingScalyrEventsSender
+  batchingSender: BatchingScalyrEventsSender
 
   constructor(options: ScalyrTransportOptions) {
     super()
     this.level = options.level || 'verbose'
     this.frequencyMs = options.frequencyMs || 5000
-    this.sendLogs = createBatchingEventsSender(options)
+    this.batchingSender = createBatchingEventsSender(options)
     if (options.autoStart || true) {
       this.startPolling()
     }
@@ -43,7 +43,7 @@ export class ScalyrTransport extends Transport {
   }
 
   async flush(minSize? :number) {
-    await this.sendLogs(this.queue, minSize)
+    await this.batchingSender(this.queue, minSize)
   }
 }
 
