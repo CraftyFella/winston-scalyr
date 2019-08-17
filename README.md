@@ -7,7 +7,6 @@ A [Scalyr][0] transport for [winston][1]
 Install the [winston-scalyr](https://www.npmjs.com/package/winston-scalyr) package from npm:
 
 ``` bash
-  $ npm install winston
   $ npm install winston-scalyr
 ```
 
