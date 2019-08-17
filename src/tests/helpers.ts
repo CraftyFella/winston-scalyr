@@ -5,7 +5,7 @@ export interface ScalyrRequest {
   body?: any
 }
 
-export const createFakeScalyrApi = (statusCode: number, timeout?: number, onRecieved?: () => void) => {
+export const createFakeScalyrApi = (statusCode: number, timeout?: number) => {
   const received: ScalyrRequest[] = []
 
   const address = 'https://www.scalyr.com';
@@ -19,7 +19,6 @@ export const createFakeScalyrApi = (statusCode: number, timeout?: number, onReci
       uri: uri,
       body: requestBody
     })
-    if (onRecieved) onRecieved()
     return {}
   })
 

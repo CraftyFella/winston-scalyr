@@ -1,6 +1,6 @@
 import Transport from 'winston-transport'
-import { ScalyrTransportOptions, ScalyrEventsSender } from './domain'
-import { createEventsSender } from './eventsSender'
+import { ScalyrTransportOptions, BatchingScalyrEventsSender } from './domain'
+import { createBatchingEventsSender } from './eventsSender'
 
 export const delay = (ms: number) => {
   return new Promise( resolve => setTimeout(resolve, ms) );
@@ -11,7 +11,7 @@ export class ScalyrTransport extends Transport {
   maxBatchSize: number
   frequencyMs: number
   running: boolean = true
-  sendBatch: ScalyrEventsSender
+  sendLogs: BatchingScalyrEventsSender
 
   constructor(options: ScalyrTransportOptions) {
     super()
@@ -22,7 +22,7 @@ export class ScalyrTransport extends Transport {
     if (options.autoStart || true) {
       this.startPolling()
     }
-    this.sendBatch = createEventsSender(this.options)
+    this.sendLogs = createBatchingEventsSender(this.options)
 
   }
 
@@ -47,22 +47,8 @@ export class ScalyrTransport extends Transport {
     flushLoop() // Should exit as it's async
   }
 
-  private reQueue(logs: any[]) {
-    logs.forEach(log => this.queue.unshift(log))
-  }
-
   async flush(minSize? :number) {
-    const min = minSize === undefined ? this.maxBatchSize : minSize
-    do {
-      const logs = this.queue.splice(0, this.maxBatchSize)
-      if (logs.length) {
-        const success = await this.sendBatch(logs)
-        if (!success) {
-          this.reQueue(logs)
-          break
-        }
-      }  
-    } while (this.queue.length > min)
+    await this.sendLogs(this.queue, minSize)
   }
 }
 

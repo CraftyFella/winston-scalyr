@@ -2,8 +2,8 @@ import Winston from 'winston'
 import { ScalyrTransport, delay } from '../../scalyrTransport'
 import { createFakeScalyrApi } from '../helpers'
 
-test('end to end test using timer', async (done) => {
-  const fakeScalyrApi = createFakeScalyrApi(200, undefined, done)
+test('end to end test using timer', async () => {
+  const fakeScalyrApi = createFakeScalyrApi(200)
   const log = Winston.createLogger()
 
   const scalyrTransport = new ScalyrTransport({
@@ -14,7 +14,7 @@ test('end to end test using timer', async (done) => {
     session: 'aSessionValue',
     sessionInfo: { key: 'value', 'key 2': 2 },
     token: 'secret',
-    frequencyMs: 1000,
+    frequencyMs: 200,
     autoStart: true
   })
 
@@ -25,17 +25,17 @@ test('end to end test using timer', async (done) => {
 
   expect(fakeScalyrApi.received.length).toBe(0)
 
-  await delay(3000)
+  await delay(2000)
 
   expect(fakeScalyrApi.received.length).toBe(1)
 
   log.info('Another test Info message', { messageKey: 'message Value' })
 
-  await delay(3000)
+  await delay(2000)
 
   expect(fakeScalyrApi.received.length).toBe(2)
 
-  scalyrTransport.close()
+  await scalyrTransport.close()
 
   
 })

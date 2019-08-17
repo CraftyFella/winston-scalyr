@@ -1,4 +1,4 @@
-import { Severity, LogToScalyrEvent, LogsToAddEventsRequest, AddEventsRequest, ScalyrEventsSender, ScalyrTransportOptions } from './domain';
+import { Severity, LogToScalyrEvent, LogsToAddEventsRequest, AddEventsRequest, ScalyrEventsSender, ScalyrTransportOptions, BatchingScalyrEventsSender } from './domain';
 import { addEvents } from './scalyrClient';
 
 const levelToSeverity = (level: string): Severity => {
@@ -46,4 +46,31 @@ export const createEventsSender = (options: ScalyrTransportOptions) : ScalyrEven
     const request = toScalyrAddEventsRequest(options, logs)
     return await addEvents(request, options.timeout)
   }
+}
+
+export const createBatchingEventsSender = (options: ScalyrTransportOptions): BatchingScalyrEventsSender => {
+
+  const sendBatch = createEventsSender(options)
+
+  return async (logs, minSize) => {
+
+    const reQueue = (batch: any[]) => {
+      batch.forEach(log => logs.unshift(log))
+    }
+
+    const maxBatchSize = options.maxBatchSize || 100
+    const min = minSize === undefined ? maxBatchSize: minSize
+    
+    do {
+      const batch = logs.splice(0, maxBatchSize)
+      if (batch.length) {
+        const success = await sendBatch(batch)
+        if (!success) {
+          reQueue(batch)
+          break
+        }
+      }  
+    } while (logs.length > min)
+  }
+
 }

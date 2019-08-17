@@ -14,4 +14,5 @@ test('exception occurs returns failure', async () => {
 
   const result = await sender([{ 'An': 'Event' }]);
   expect(result).toBe(false)
+
 })
