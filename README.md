@@ -71,14 +71,18 @@ This should install the modules via yarn, run the tests and create the package
 
 Both examples require an environment variable setup for the `SCALYR_TOKEN`
 
-```
-export SCALYR_TOKEN=my-token
+```bash
+  $ export SCALYR_TOKEN=my-token
 ```
 
 #### Simple
 
-```node build/simple.js```
+```bash
+  $ node build/simple.js
+```
 
 #### Restify
 
-```node build/restify.js```
+```bash
+  $ node build/restify.js
+```
