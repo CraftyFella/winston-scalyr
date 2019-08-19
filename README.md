@@ -2,7 +2,7 @@
 
 A [Scalyr][0] transport for [winston][1]
 
-### Getting started
+## Getting started
 
 Install the [winston-scalyr](https://www.npmjs.com/package/winston-scalyr) package from npm:
 
@@ -52,3 +52,33 @@ winston.createLogger({
 [1]: https://github.com/flatiron/winston
 [2]: https://www.scalyr.com/keys
 [3]: https://www.scalyr.com/help/api
+
+## Building
+
+### Requirements
+
+* yarn
+* typescript
+* node 10 or greater
+
+clone to repository
+
+then run `./build.sh`
+
+This should install the modules via yarn, run the tests and create the package
+
+### Examples
+
+Both example require an environment variable setup for the `SCALYR_TOKEN`
+
+```
+export SCALYR_TOKEN=my-token
+```
+
+#### Simple
+
+```node build/simple.js```
+
+#### Restify
+
+```node build/restify.js```
