@@ -1,7 +1,7 @@
 set -e
 if [ ! -d node_modules ]
 then
-  npm install
+  yarn
 fi
 rm -rf build
 npx jest --runInBand
