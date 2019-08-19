@@ -69,7 +69,7 @@ This should install the modules via yarn, run the tests and create the package
 
 ### Examples
 
-Both example require an environment variable setup for the `SCALYR_TOKEN`
+Both examples require an environment variable setup for the `SCALYR_TOKEN`
 
 ```
 export SCALYR_TOKEN=my-token
