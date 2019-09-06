@@ -8,6 +8,7 @@ export interface ScalyrTransportOptions {
   readonly timeout?: number
   readonly level?: string
   readonly maxBatchSize?: number
+  readonly maxQueueSize?: number
   readonly frequencyMs?: number
   readonly sessionInfo?: SessionInfo
   readonly autoStart?: boolean
@@ -29,6 +30,12 @@ export interface AddEventsRequest {
 }
 
 export type LogToScalyrEvent = (log: any) => ScalyrEvent
-export type LogsToAddEventsRequest = (options : ScalyrTransportOptions, logs: any[]) => AddEventsRequest
+export type LogsToAddEventsRequest = (
+  options: ScalyrTransportOptions,
+  logs: any[]
+) => AddEventsRequest
 export type ScalyrEventsSender = (logs: any[]) => Promise<boolean>
-export type BatchingScalyrEventsSender = (logs: any[], min?: number) => Promise<void>
+export type BatchingScalyrEventsSender = (
+  logs: any[],
+  min?: number
+) => Promise<void>

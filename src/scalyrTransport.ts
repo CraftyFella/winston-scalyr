@@ -3,13 +3,14 @@ import { ScalyrTransportOptions, BatchingScalyrEventsSender } from './domain'
 import { createBatchingEventsSender } from './eventsSender'
 
 export const delay = (ms: number) => {
-  return new Promise( resolve => setTimeout(resolve, ms) );
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 export class ScalyrTransport extends Transport {
   queue: Array<any> = []
   frequencyMs: number
   running: boolean = true
   batchingSender: BatchingScalyrEventsSender
+  maxQueueSize: number
 
   constructor(options: ScalyrTransportOptions) {
     super()
@@ -19,10 +20,13 @@ export class ScalyrTransport extends Transport {
     if (options.autoStart || true) {
       this.startPolling()
     }
+    this.maxQueueSize = options.maxQueueSize || 5000
   }
 
   log(info: any, next: () => void) {
-    this.queue.push(info)
+    if (this.queue.length < this.maxQueueSize) {
+      this.queue.push(info)
+    }
     next()
   }
 
@@ -42,7 +46,7 @@ export class ScalyrTransport extends Transport {
     flushLoop() // Should exit as it's async
   }
 
-  async flush(minSize? :number) {
+  async flush(minSize?: number) {
     await this.batchingSender(this.queue, minSize)
   }
 }
