@@ -38,15 +38,17 @@ winston.createLogger({
 
 ### Optional parameters
 
-**maxBatchSize** The maximum number of events to include in a single batch.
+**maxBatchSize** The maximum number of events to include in a single batch. Default is `500`
 
-**frequencyMs** The time to wait between checking for event batches.
+**maxQueueSize** The maximum number of events to keep in a queue. After this number logs will be dropped. This is to avoid memory leaks if Scalyr.com is down or you can't connect. Default is `5,000`
 
-**sessionInfo** Additional information about the session. See [https://www.scalyr.com/help/api][3]
+**frequencyMs** The time to wait between checking for event batches. Default is `5000`
 
-**level** Level of messages that this transport should log.
+**sessionInfo** Additional information about the session. See [https://www.scalyr.com/help/api][3]. No Default
 
-**autoStart** Allows you to manually call flush, or close the logger to push all logs.
+**level** Level of messages that this transport should log. Default is `verbose`
+
+**autoStart** Allows you to manually call flush, or close the logger to push all logs. Default is `true`
 
 [0]: https://www.scalyr.com
 [1]: https://github.com/flatiron/winston
