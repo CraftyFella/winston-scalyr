@@ -40,6 +40,8 @@ winston.createLogger({
 
 **maxBatchSize** The maximum number of events to include in a single batch. Default is `500`
 
+**parser** set a parser in scalyr to separate fields into columns. More documentation can be found [here](https://app.scalyr.com/help/parsing-logs). 
+
 **maxQueueSize** The maximum number of events to keep in a queue. After this number logs will be dropped. This is to avoid memory leaks if Scalyr.com is down or you can't connect. Default is `5,000`
 
 **frequencyMs** The time to wait between checking for event batches. Default is `5000`
