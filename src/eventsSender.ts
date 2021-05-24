@@ -34,7 +34,8 @@ const toScalyrAddEventsRequest: LogsToAddEventsRequest = (options, logs) => {
     sessionInfo: {
       ...options.sessionInfo,
       logfile: options.logfile,
-      serverHost: options.serverHost
+      serverHost: options.serverHost,
+      parser: options.parser
     },
     events: events
   }
