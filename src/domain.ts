@@ -3,6 +3,7 @@ type SessionInfo = { [key: string]: any }
 export interface ScalyrTransportOptions {
   readonly session: string
   readonly serverHost: string
+  readonly parser?: string
   readonly logfile: string
   readonly token: string
   readonly timeout?: number
