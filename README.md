@@ -20,10 +20,10 @@ transports.push(
     new scalyr.ScalyrTransport({
       logfile: 'your-service-name',
       serverHost: os.hostname(),
-      parser: 'json'
+      parser: 'json',
       session: `something-unique-host-version-service-name`,
       token: 'your-secret-token-from-scalyr'
-    })
+    }))
 winston.createLogger({
   level: 'info',
   transports
